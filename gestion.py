@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import csv
 from datetime import datetime
 
@@ -55,7 +54,7 @@ crear_archivo_si_no_existe()
 print("\n--- Contenido inicial del archivo (después de crear/verificar) ---")
 for equipo in leer_equipos():
     print(equipo)
-=======
+    
 import csv
 from datetime import datetime
 
