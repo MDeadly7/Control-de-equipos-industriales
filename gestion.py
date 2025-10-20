@@ -134,3 +134,75 @@ def listar_equipos_secuencial():
 # Ejemplo de uso:
 listar_equipos_secuencial()
 
+#CRUD
+
+def obtener_siguiente_id():
+    """
+    Calcula el siguiente ID disponible para un nuevo equipo.
+    """
+    equipos = leer_equipos()
+    if not equipos:
+        return 1
+    # Convertimos los IDs a enteros y buscamos el máximo, luego le sumamos 1
+    max_id = max([int(e['ID']) for e in equipos if e['ID'].isdigit()])
+    return max_id + 1
+
+def agregar_equipo():
+    """
+    Permite al usuario ingresar los datos de un nuevo equipo y lo guarda.
+    """
+    print("\n--- Agregar Nuevo Equipo ---")
+    equipo_id = obtener_siguiente_id()
+    print(f"ID del nuevo equipo: {equipo_id}")
+    nombre = input("Nombre del equipo: ")
+    tipo = input("Tipo de equipo (Ej. 'Sensor', 'Actuador', 'PLC'): ")
+    valor_calibracion = input("Valor de calibración (Dejar en blanco si no aplica): ")
+    fecha_mantenimiento = input("Fecha del último mantenimiento (YYYY-MM-DD): ")
+
+    nuevo_equipo = {
+        'ID': str(equipo_id),
+        'Nombre': nombre,
+        'Tipo': tipo,
+        'ValorCalibracion': valor_calibracion if valor_calibracion else 'NA',
+        'FechaUltimoMantenimiento': fecha_mantenimiento
+    }
+
+    equipos = leer_equipos()
+    equipos.append(nuevo_equipo)
+    guardar_equipos(equipos)
+    print("Equipo agregado con éxito.")
+
+def modificar_equipo(equipo_id):
+    """
+    Permite modificar un equipo existente por su ID.
+    """
+    print(f"\n--- Modificar Equipo con ID: {equipo_id} ---")
+    equipos = leer_equipos()
+    equipo_encontrado = False
+    for i, equipo in enumerate(equipos):
+        if equipo.get('ID') == str(equipo_id):
+            print("Equipo actual:")
+            for key, value in equipo.items():
+                print(f"- {key}: {value}")
+
+            print("\nIngrese los nuevos valores (deje en blanco para mantener el actual):")
+            nombre = input(f"Nombre ({equipo['Nombre']}): ")
+            tipo = input(f"Tipo ({equipo['Tipo']}): ")
+            valor_calibracion = input(f"Valor de Calibración ({equipo['ValorCalibracion']}): ")
+            fecha_mantenimiento = input(f"Fecha Último Mantenimiento ({equipo['FechaUltimoMantenimiento']}): ")
+
+            if nombre: equipos[i]['Nombre'] = nombre
+            if tipo: equipos[i]['Tipo'] = tipo
+            if valor_calibracion: equipos[i]['ValorCalibracion'] = valor_calibracion
+            if fecha_mantenimiento: equipos[i]['FechaUltimoMantenimiento'] = fecha_mantenimiento
+
+            guardar_equipos(equipos)
+            print("Equipo modificado con éxito.")
+            equipo_encontrado = True
+            break
+    if not equipo_encontrado:
+        print(f"No se encontró ningún equipo con el ID '{equipo_id}'.")
+
+# Ejemplo de uso:
+# agregar_equipo() # Descomentar para agregar un nuevo equipo
+# modificar_equipo(1) # Descomentar para modificar el equipo con ID 1
