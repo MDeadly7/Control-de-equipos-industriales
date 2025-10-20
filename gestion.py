@@ -206,3 +206,45 @@ def modificar_equipo(equipo_id):
 # Ejemplo de uso:
 # agregar_equipo() # Descomentar para agregar un nuevo equipo
 # modificar_equipo(1) # Descomentar para modificar el equipo con ID 1
+
+# MANTENIMIENTO
+
+def equipos_necesitan_mantenimiento(fecha_limite):
+    """
+    Muestra equipos cuyo último mantenimiento es anterior a una fecha límite.
+    fecha_limite debe ser un objeto datetime.date.
+    """
+    print(f"\n--- Equipos que necesitan mantenimiento antes de: {fecha_limite.strftime('%Y-%m-%d')} ---")
+    equipos = leer_equipos()
+    encontrados = False
+    for equipo in equipos:
+        fecha_str = equipo.get('FechaUltimoMantenimiento')
+        try:
+            fecha_mantenimiento = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            if fecha_mantenimiento < fecha_limite:
+                print(f"ID: {equipo['ID']}, Nombre: {equipo['Nombre']}, Último Mant.: {equipo['FechaUltimoMantenimiento']}")
+                encontrados = True
+        except (ValueError, TypeError):
+            print(f"Advertencia: Fecha de mantenimiento inválida para ID {equipo['ID']}: '{fecha_str}'")
+    if not encontrados:
+        print("No hay equipos que necesiten mantenimiento antes de esta fecha.")
+
+def buscar_equipos_por_tipo(tipo_equipo):
+    """
+    Busca y lista equipos de un tipo específico.
+    """
+    print(f"\n--- Buscar Equipos por Tipo: '{tipo_equipo}' ---")
+    equipos = leer_equipos()
+    encontrados = False
+    for equipo in equipos:
+        if equipo.get('Tipo', '').lower() == tipo_equipo.lower():
+            print(f"ID: {equipo['ID']}, Nombre: {equipo['Nombre']}, Valor Calibración: {equipo['ValorCalibracion']}")
+            encontrados = True
+    if not encontrados:
+        print(f"No se encontraron equipos del tipo '{tipo_equipo}'.")
+
+# Ejemplo de uso:
+# fecha_limite_ejemplo = datetime(2023, 11, 1).date() # Equipos con mantenimiento antes del 1 de Noviembre de 2023
+# equipos_necesitan_mantenimiento(fecha_limite_ejemplo)
+
+# buscar_equipos_por_tipo('Sensor')
